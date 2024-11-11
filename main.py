@@ -2,11 +2,13 @@ import azure.functions as func
 import fastapi
 
 from MainDirectory.routers.recipe_router import recipe_router
+from MainDirectory.routers.user_router import user_router
 from MainDirectory.database.database import DatabaseHandler
 
 app = fastapi.FastAPI()
 
 app.include_router(recipe_router)
+app.include_router(user_router)
 
 DatabaseHandler.create_database(DatabaseHandler)
 
