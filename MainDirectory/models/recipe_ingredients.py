@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
-from models import Base
+from MainDirectory.models import Base
 
 
 class RecipeIngredient(Base):

@@ -1,8 +1,8 @@
 from sqlalchemy import Integer, String, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models import Base
+from MainDirectory.models import Base
 
-from models.recipe import Recipe
+from MainDirectory.models.recipe import Recipe
 
 
 class RecipeDetail(Base):
