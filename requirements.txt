@@ -5,3 +5,6 @@
 azure-functions
 fastapi
 sqlalchemy
+pyjwt
+passlib
+bcrypt
