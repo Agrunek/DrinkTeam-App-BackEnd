@@ -1,0 +1,34 @@
+# register
+POST /user/register HTTP/1.1
+Host: 127.0.0.1:7071
+Content-Type: application/json
+Content-Length: 61
+
+{
+  "username": "testuser",
+  "password": "testpassword"
+}
+
+
+# login 
+POST /user/login HTTP/1.1
+Host: localhost:7071
+Content-Type: application/json
+Content-Length: 61
+
+{
+  "username": "testuser",
+  "password": "testpassword"
+}
+
+# refresh token
+POST /user/refresh HTTP/1.1
+Host: localhost:7071
+Authorization: Bearer <token>
+
+
+
+# test protected endpoint 
+GET /user/protected HTTP/1.1
+Host: localhost:7071
+Authorization: Bearer <token>
