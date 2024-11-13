@@ -3,34 +3,45 @@ from sqlalchemy.orm import sessionmaker
 import os
 from MainDirectory.models import Base
 
-class DatabaseHandler:
-    server = 'drink-team.database.windows.net:1433'
-    database = 'drink_team_db'
-    username='admin_database',
-    password=os.getenv("DRINK_TEAM_DATABASE_PASSWORD")
-    connection_string = f"mssql+pyodbc://{username[0]}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
-    SessionLocal = None
+from MainDirectory.models.category import Category
+from MainDirectory.models.ingredient import Ingredient
+from MainDirectory.models.recipe_ingredients import RecipeIngredient
+from MainDirectory.models.user import User
+from MainDirectory.models.user_progress import UserProgress
+from MainDirectory.models.review import Review
+from MainDirectory.models.category import Category
+from MainDirectory.models.recipe_details import RecipeDetail
+from MainDirectory.models.recipe import Recipe
+from MainDirectory.models.step import Step
+from MainDirectory.models.instruction_step import InstructionStep
 
-    # Create connection with database
-    @staticmethod
-    def create_database(self) -> None:
-        self.database_engine = _sql.create_engine(url = self.connection_string, echo = True)
-        self.SessionLocal = sessionmaker(autocommit = False, autoflush = False, bind = self.database_engine)
-        Base.metadata.create_all(bind = self.database_engine)
+server = 'drink-team.database.windows.net:1433'
+database = 'drink_team_db'
+username='admin_database',
+password=os.getenv("DRINK_TEAM_DATABASE_PASSWORD")
+connection_string = f"mssql+pyodbc://{username[0]}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
+SessionLocal = None
 
-    @staticmethod
-    # Get active session
-    def get_session(self):
-        try:
-            session = self.SessionLocal()
-            return session
-        finally:
-            session.close()
 
+database_engine = _sql.create_engine(url = connection_string, echo = False)
+SessionLocal = sessionmaker(autocommit = False, autoflush = False, bind = database_engine)
+
+# Create connection with database
+def create_database():
+    Base.metadata.create_all(bind = database_engine)
+
+# Get active session
 def get_session():
-    db = DatabaseHandler.SessionLocal()
+    db = SessionLocal()
     try:
         yield db
+    finally:
+        db.close()
+
+def get_session_with():
+    db = SessionLocal()
+    try:
+        return db
     finally:
         db.close()
 
