@@ -8,3 +8,4 @@ sqlalchemy
 pyjwt
 passlib
 bcrypt
+pydantic
