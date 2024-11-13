@@ -3,14 +3,14 @@ import fastapi
 
 from MainDirectory.routers.recipe_router import recipe_router
 from MainDirectory.routers.user_router import user_router
-from MainDirectory.database.database import DatabaseHandler
+from MainDirectory.database.database import create_database
+
+create_database()
 
 app = fastapi.FastAPI()
 
 app.include_router(recipe_router)
 app.include_router(user_router)
-
-DatabaseHandler.create_database(DatabaseHandler)
 
 @app.get("/")
 async def hello():
