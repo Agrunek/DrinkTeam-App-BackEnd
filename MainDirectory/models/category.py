@@ -15,4 +15,7 @@ class Category(Base):
     description : Mapped[String] = mapped_column(String(100), nullable = False)
 
     #relationship with Recipe
-    recipe : Mapped["Recipe"] = relationship(back_populates='categories')
+    recipe : Mapped["Recipe"] = relationship(back_populates='category')
+    
+    def __str__(self) -> str:
+        return f"Category(id={self.category_id}, name={self.name}, description={self.description})"
