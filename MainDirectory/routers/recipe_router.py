@@ -6,7 +6,7 @@ from typing import List
 
 from MainDirectory.services.recipe_service import RecipeService
 from MainDirectory.database.database import get_session
-from MainDirectory.schemas.recipe_schema import RecipeResponse
+from MainDirectory.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd
 
 recipe_router = APIRouter(
     prefix="/recipe",
@@ -37,3 +37,14 @@ def get_recipe_by_id(recipe_id : int, db : _orm.Session = Depends(get_session)):
             raise HTTPException(status_code=404, detail = f"Recipe id = {recipe_id} not found !!")
 
         return recipe
+
+@recipe_router.post("/add", status_code = status.HTTP_201_CREATED)
+def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = Depends(get_session)):
+        try: 
+            RecipeService.add_recipe(_new_recipe = _new_RecipeRequest, _db = db)
+
+            return {"SUCCESS" : "New Recipe was added successfully !"}
+        
+        except Exception:
+            db.rollback()
+            raise HTTPException(status_code=404, detail = f"Can not add new recipe !")
