@@ -18,9 +18,15 @@ def test():
     return {"test": "test"}
 
 @recipe_router.get("/all", response_model = List[RecipeResponse], status_code = status.HTTP_200_OK)
-def get_all_recipes(sort_rating : str | None = "desc", sort_prep_time : str | None = "desc", db : _orm.Session = Depends(get_session)):
-        
-        recipes = RecipeService.get_all_recipes(_sort_rating = sort_rating,_sort_prep_time = sort_prep_time,_db = db)
+def get_all_recipes(sort_rating : str | None = None,
+                    sort_prep_time : str | None = None,
+                    sort_difficulty : str | None = None,
+                    db : _orm.Session = Depends(get_session)):
+
+        recipes = RecipeService.get_all_recipes(_sort_rating = sort_rating,
+                                                _sort_prep_time = sort_prep_time,
+                                                _sort_difficulty = sort_difficulty,
+                                                _db = db)
 
         if not recipes:
             raise HTTPException(status_code = 404, detail = "No recipes found !")

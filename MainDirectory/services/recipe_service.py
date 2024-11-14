@@ -9,12 +9,15 @@ from MainDirectory.schemas.recipe_schema import RecipeRequestAdd
 class RecipeService:
 
     @staticmethod
-    def get_all_recipes(_sort_rating : str, _sort_prep_time : str, _db : _orm.Session):
+    def get_all_recipes(_sort_rating : str | None, _sort_prep_time : str, _sort_difficulty : str, _db : _orm.Session):
         
-        rating_order = _sql.asc(RecipeDetail.total_rating) if _sort_rating == "asc" else _sql.desc(RecipeDetail.total_rating)
-        prep_time_order = _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
+        rating_order = None if _sort_rating == None else _sql.asc(RecipeDetail.total_rating) if _sort_rating == "asc" else _sql.desc(RecipeDetail.total_rating)
+        prep_time_order = None if _sort_prep_time == None else _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
+        difficulty_order = None if _sort_difficulty == None else _sql.asc(RecipeDetail.difficulty) if _sort_difficulty == "asc" else _sql.desc(RecipeDetail.difficulty)
 
-        stmt = _sql.select(Recipe).join(Recipe.recipe_detail).order_by(rating_order,prep_time_order)
+        print(f"Check: {rating_order} | {prep_time_order} | {difficulty_order}")
+
+        stmt = _sql.select(Recipe).join(Recipe.recipe_detail).order_by(rating_order,difficulty_order,prep_time_order)
 
         return _db.execute(stmt).scalars().all()
     
