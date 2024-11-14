@@ -3,6 +3,7 @@ import sqlalchemy.orm as _orm
 from datetime import datetime
 
 from MainDirectory.models.recipe import Recipe
+from MainDirectory.models.recipe_details import RecipeDetail
 from MainDirectory.schemas.recipe_schema import RecipeRequestAdd
 
 class RecipeService:
@@ -21,6 +22,19 @@ class RecipeService:
     @staticmethod
     def add_recipe(_new_recipe : RecipeRequestAdd, _db : _orm.Session):
         
+        new_recipe_detail = RecipeDetail(
+            description = _new_recipe.recipe_detail.description,
+            type = _new_recipe.recipe_detail.type,
+            alcohol_content = _new_recipe.recipe_detail.alcohol_content,
+            total_rating = _new_recipe.recipe_detail.total_rating,
+            difficulty = _new_recipe.recipe_detail.difficulty
+        )
+
+        # _db.add(new_recipe_detail)
+        # _db.commit()
+        # _db.refresh(new_recipe_detail)
+
+
         new_recipe = Recipe(
             name = _new_recipe.name,
             image_url = _new_recipe.image_url,
@@ -28,7 +42,7 @@ class RecipeService:
             creation_time = datetime.now(),
             last_modified = datetime.now(),
             category_id = _new_recipe.category_id,
-            recipe_detail_id =_new_recipe.recipe_detail_id,
+            recipe_detail = new_recipe_detail,
             user_id = _new_recipe.user_id,
         )
 
