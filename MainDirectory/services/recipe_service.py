@@ -56,3 +56,27 @@ class RecipeService:
 
         _db.delete(recipe)
         _db.commit()
+
+
+    @staticmethod
+    def update_recipe(_updated_recipe : RecipeRequestAdd, _db : _orm.Session):
+        try:
+            recipe = RecipeService.get_recipe_by_id(_recipe_id = _updated_recipe.recipe_id, _db = _db)
+            print("Recipe found !!")
+            if recipe is None:
+                print("Recipe not found !!")
+                raise Exception
+
+            recipe.name = _updated_recipe.name
+            recipe.image_url = _updated_recipe.image_url
+            recipe.preparation_time = _updated_recipe.preparation_time
+            recipe.last_modified = datetime.now()
+            recipe.recipe_detail.description = _updated_recipe.recipe_detail.description
+            recipe.recipe_detail.type = _updated_recipe.recipe_detail.type
+            recipe.recipe_detail.alcohol_content = _updated_recipe.recipe_detail.alcohol_content
+            recipe.recipe_detail.total_rating = _updated_recipe.recipe_detail.total_rating
+            recipe.recipe_detail.difficulty = _updated_recipe.recipe_detail.difficulty
+            _db.commit()
+        except Exception as e:
+            print("ERROR ", e)
+            raise Exception

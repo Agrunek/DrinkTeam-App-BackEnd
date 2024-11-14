@@ -6,6 +6,7 @@ from MainDirectory.schemas.recipe_detail_schema import RecipeDetailResponse, Rec
 from MainDirectory.schemas.user_schema import UserResponse
 
 class RecipeRequestAdd(BaseModel):
+    recipe_id : Optional[int] = None
     name : str
     image_url : Optional[str] = None
     preparation_time : time
