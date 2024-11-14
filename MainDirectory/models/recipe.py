@@ -21,7 +21,7 @@ class Recipe(Base):
 
     # # relationship with Recipe_Details
     recipe_detail_id: Mapped[Integer] = mapped_column(Integer, ForeignKey('recipe_details.recipe_detail_id'))
-    recipe_detail : Mapped["RecipeDetail"] = relationship(back_populates = 'recipe')
+    recipe_detail : Mapped["RecipeDetail"] = relationship(back_populates = 'recipe', cascade="all, delete")
 
     # relationship with User
     user_id : Mapped[Integer] = mapped_column(Integer, ForeignKey('users.user_id'))

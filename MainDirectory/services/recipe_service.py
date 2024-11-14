@@ -30,11 +30,6 @@ class RecipeService:
             difficulty = _new_recipe.recipe_detail.difficulty
         )
 
-        # _db.add(new_recipe_detail)
-        # _db.commit()
-        # _db.refresh(new_recipe_detail)
-
-
         new_recipe = Recipe(
             name = _new_recipe.name,
             image_url = _new_recipe.image_url,
@@ -50,3 +45,14 @@ class RecipeService:
         _db.commit()
         _db.refresh(new_recipe)
         
+
+    @staticmethod
+    def delete_recipe_by_id(_recipe_id : int, _db : _orm.Session):
+        
+        recipe = RecipeService.get_recipe_by_id(_recipe_id, _db = _db)
+
+        if recipe is None:
+            raise Exception
+
+        _db.delete(recipe)
+        _db.commit()
