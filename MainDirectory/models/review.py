@@ -7,7 +7,7 @@ class Review(Base):
     __tablename__ = 'reviews'
 
     review_id : Mapped[int] = mapped_column(Integer, primary_key = True, index = True)
-    comment : Mapped[String] = mapped_column(String)
+    comment : Mapped[String] = mapped_column(String(255))
     rating : Mapped[Integer] = mapped_column(Integer, nullable = False)
     creation_date : Mapped[DateTime] = mapped_column(DateTime)
 
