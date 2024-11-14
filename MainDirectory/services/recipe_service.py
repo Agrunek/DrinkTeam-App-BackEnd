@@ -13,12 +13,20 @@ class RecipeService:
         stmt = _sql.select(Recipe)
         return _db.execute(stmt).scalars().all()
     
+
     @staticmethod
     def get_recipe_by_id(_recipe_id : int, _db : _orm.Session):
         stmt = _sql.select(Recipe).where(Recipe.recipe_id == _recipe_id)
         res = _db.execute(stmt).scalars().first()
         return None if res is None else res
     
+
+    @staticmethod
+    def get_recipes_by_category_id(_category_id : int, _db : _orm.Session):
+        stmt = _sql.select(Recipe).where(Recipe.category_id == _category_id)
+        return _db.execute(stmt).scalars().all()
+    
+
     @staticmethod
     def add_recipe(_new_recipe : RecipeRequestAdd, _db : _orm.Session):
         
