@@ -48,3 +48,15 @@ def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = De
         except Exception:
             db.rollback()
             raise HTTPException(status_code=404, detail = f"Can not add new recipe !")
+        
+
+@recipe_router.delete("/delete/{recipe_id}", status_code = status.HTTP_202_ACCEPTED)
+def delete_recipe(recipe_id, db : _orm.Session = Depends(get_session)):
+        try: 
+            RecipeService.delete_recipe_by_id(_recipe_id = recipe_id, _db = db)
+
+            return {"SUCCESS" : f"Recipe id = {recipe_id} successfully deleted!"}
+        
+        except Exception:
+            db.rollback()
+            raise HTTPException(status_code=404, detail = f"Can not delete recipe id = {recipe_id}!")
