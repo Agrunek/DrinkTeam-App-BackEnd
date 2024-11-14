@@ -17,10 +17,10 @@ recipe_router = APIRouter(
 def test():
     return {"test": "test"}
 
-@recipe_router.get("/all", response_model = List[RecipeResponse])
-def get_all_recipes(db : _orm.Session = Depends(get_session)):
+@recipe_router.get("/all", response_model = List[RecipeResponse], status_code = status.HTTP_200_OK)
+def get_all_recipes(sort_rating : str | None = "desc", sort_prep_time : str | None = "desc", db : _orm.Session = Depends(get_session)):
         
-        recipes = RecipeService.get_all_recipes(_db = db)
+        recipes = RecipeService.get_all_recipes(_sort_rating = sort_rating,_sort_prep_time = sort_prep_time,_db = db)
 
         if not recipes:
             raise HTTPException(status_code = 404, detail = "No recipes found !")

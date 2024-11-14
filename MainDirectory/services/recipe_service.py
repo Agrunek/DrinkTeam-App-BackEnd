@@ -9,8 +9,13 @@ from MainDirectory.schemas.recipe_schema import RecipeRequestAdd
 class RecipeService:
 
     @staticmethod
-    def get_all_recipes(_db : _orm.Session):
-        stmt = _sql.select(Recipe)
+    def get_all_recipes(_sort_rating : str, _sort_prep_time : str, _db : _orm.Session):
+        
+        rating_order = _sql.asc(RecipeDetail.total_rating) if _sort_rating == "asc" else _sql.desc(RecipeDetail.total_rating)
+        prep_time_order = _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
+
+        stmt = _sql.select(Recipe).join(Recipe.recipe_detail).order_by(rating_order,prep_time_order)
+
         return _db.execute(stmt).scalars().all()
     
 
@@ -26,7 +31,7 @@ class RecipeService:
         stmt = _sql.select(Recipe).where(Recipe.category_id == _category_id)
         return _db.execute(stmt).scalars().all()
     
-
+    
     @staticmethod
     def add_recipe(_new_recipe : RecipeRequestAdd, _db : _orm.Session):
         
