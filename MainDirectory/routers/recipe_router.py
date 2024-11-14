@@ -38,6 +38,18 @@ def get_recipe_by_id(recipe_id : int, db : _orm.Session = Depends(get_session)):
 
         return recipe
 
+
+@recipe_router.get("/category/{category_id}", response_model = List[RecipeResponse], status_code = status.HTTP_200_OK)
+def get_recipes_by_category_id(category_id : int, db : _orm.Session = Depends(get_session)):
+        
+        recipes = RecipeService.get_recipes_by_category_id(_category_id = category_id, _db = db)
+
+        if not recipes:
+            raise HTTPException(status_code=404, detail = f"Can not find recipes with category_id = {category_id} !!")
+
+        return recipes
+
+
 @recipe_router.post("/add", status_code = status.HTTP_201_CREATED)
 def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = Depends(get_session)):
         try: 
