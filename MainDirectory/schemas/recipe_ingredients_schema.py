@@ -8,6 +8,9 @@ class RecipeIngredientRequestAdd(BaseModel):
     quantity : float
     unit : str
 
+    class Config:
+        orm_mode = True
+
 
 class RecipeIngredientResponse(BaseModel):
     recipe_id : int
