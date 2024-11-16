@@ -33,7 +33,7 @@ def add_recipe_ingredients(recipe_ingredients : List[RecipeIngredientRequestAdd]
 
         RecipeIngredientService.add_recipe_ingredients(_recipe_ingredients = recipe_ingredients, _db = db)
 
-        return {"SUCCESS" : f"New Recipe Ingredients for {recipe_ingredients[0].recipe_id} was added successfully !"}
+        return {"SUCCESS" : f"New Recipe Ingredients for recipe id = {recipe_ingredients[0].recipe_id} was added successfully !"}
         
     except Exception as e:
         print("Exception : ", e)
