@@ -6,7 +6,7 @@ from typing import List
 from MainDirectory.database.database import get_session
 
 from MainDirectory.services.recipe_ingridient_service import RecipeIngredientService
-from MainDirectory.schemas.recipe_ingredients_schema import RecipeIngredientResponse
+from MainDirectory.schemas.recipe_ingredients_schema import RecipeIngredientResponse, RecipeIngredientRequestAdd
 
 recipe_ingredient_router = APIRouter(
     prefix="/recipe_ingredients",
@@ -26,3 +26,16 @@ def get_recipe_ingredients(recipe_id : int, db : _orm.Session = Depends(get_sess
     
     return recipe_ingredients
 
+
+@recipe_ingredient_router.post("/add", status_code = status.HTTP_201_CREATED)
+def add_recipe_ingredients(recipe_ingredients : List[RecipeIngredientRequestAdd], db : _orm.Session = Depends(get_session)):
+    try: 
+
+        RecipeIngredientService.add_recipe_ingredients(_recipe_ingredients = recipe_ingredients, _db = db)
+
+        return {"SUCCESS" : f"New Recipe Ingredients for {recipe_ingredients[0].recipe_id} was added successfully !"}
+        
+    except Exception as e:
+        print("Exception : ", e)
+        db.rollback()
+        raise HTTPException(status_code=404, detail = f"Can not add new recipe ingredients !")
