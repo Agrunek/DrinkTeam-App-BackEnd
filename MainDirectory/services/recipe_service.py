@@ -4,7 +4,9 @@ from datetime import datetime
 
 from MainDirectory.models.recipe import Recipe
 from MainDirectory.models.recipe_details import RecipeDetail
-from MainDirectory.schemas.recipe_schema import RecipeRequestAdd
+from MainDirectory.schemas.recipe_schema import RecipeRequestAdd, RecipeIngredientsStepsRequest
+from MainDirectory.services.recipe_ingridient_service import RecipeIngredientService
+from MainDirectory.services.instruction_service import InstructionService
 
 class RecipeService:
 
@@ -92,7 +94,25 @@ class RecipeService:
             recipe.recipe_detail.alcohol_content = _updated_recipe.recipe_detail.alcohol_content
             recipe.recipe_detail.total_rating = _updated_recipe.recipe_detail.total_rating
             recipe.recipe_detail.difficulty = _updated_recipe.recipe_detail.difficulty
+
             _db.commit()
+
         except Exception as e:
             print("ERROR ", e)
             raise Exception
+        
+
+    @staticmethod
+    def add_recipe_ingredients_and_instruction(_recipe_ingredients_instruction : RecipeIngredientsStepsRequest, _db : _orm.Session):
+
+        recipe_check = RecipeService.get_recipe_by_id(_recipe_id = _recipe_ingredients_instruction.recipe_id, _db = _db)
+
+        if not recipe_check:
+            raise TypeError
+
+        RecipeIngredientService.add_recipe_ingredients(_recipe_ingredients = _recipe_ingredients_instruction.ingredients, _db = _db)
+
+        InstructionService.add_recipe_instruction(_recipe_id = _recipe_ingredients_instruction.recipe_id,
+                                                _recipe_instructions = _recipe_ingredients_instruction.steps,
+                                                _db = _db)
+        
