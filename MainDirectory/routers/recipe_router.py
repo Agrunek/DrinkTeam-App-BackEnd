@@ -5,8 +5,11 @@ from typing import List
 # from sqlalchemy import text
 
 from MainDirectory.services.recipe_service import RecipeService
+from MainDirectory.services.recipe_ingridient_service import RecipeIngredientService
+from MainDirectory.services.instruction_service import InstructionService
 from MainDirectory.database.database import get_session
-from MainDirectory.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd
+from MainDirectory.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd, RecipeIngredientsStepsResponse
+from MainDirectory.schemas.recipe_ingredients_schema import RecipeIngredientResponse
 
 recipe_router = APIRouter(
     prefix="/recipe",
@@ -83,12 +86,32 @@ def delete_recipe(recipe_id : int, db : _orm.Session = Depends(get_session)):
 @recipe_router.put("/update", status_code = status.HTTP_202_ACCEPTED)
 def update_recipe(update_recipe : RecipeRequestAdd, db : _orm.Session = Depends(get_session)):
         
-        try: 
-            print("Try to update recipe")
-            RecipeService.update_recipe(_updated_recipe = update_recipe, _db = db)
+    try: 
+        print("Try to update recipe")
+        RecipeService.update_recipe(_updated_recipe = update_recipe, _db = db)
 
-            return {"SUCCESS" : f"Recipe name = {update_recipe.name} successfully updated!"}
+        return {"SUCCESS" : f"Recipe name = {update_recipe.name} successfully updated!"}
+    
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=404, detail = f"Can not update recipe = {update_recipe.name}!")
         
-        except Exception:
-            db.rollback()
-            raise HTTPException(status_code=404, detail = f"Can not update recipe = {update_recipe.name}!")
+
+@recipe_router.get("/{recipe_id}/recipe_extra", response_model = RecipeIngredientsStepsResponse, status_code = status.HTTP_200_OK)
+def get_recipe_ingredients_and_steps(recipe_id : int, db : _orm.Session = Depends(get_session)):
+
+    recipe_check = RecipeService.get_recipe_by_id(_recipe_id = recipe_id, _db = db)
+
+    if not recipe_check:
+        raise HTTPException(status_code=404, detail = f"Can not find recipe id = {recipe_id}!")
+
+    recipe_ingredients = RecipeIngredientService.get_recipe_ingredients(_recipe_id = recipe_id, _db = db)
+    recipe_instructions = InstructionService.get_recipe_instruction(_recipe_id = recipe_id, _db = db)
+    #print(recipe_instructions)
+
+    recipe_ingredients_instruction = RecipeIngredientsStepsResponse(
+        ingredients = recipe_ingredients,
+        steps = recipe_instructions
+    )
+
+    return recipe_ingredients_instruction
