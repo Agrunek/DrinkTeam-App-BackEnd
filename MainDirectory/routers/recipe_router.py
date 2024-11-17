@@ -8,8 +8,7 @@ from MainDirectory.services.recipe_service import RecipeService
 from MainDirectory.services.recipe_ingridient_service import RecipeIngredientService
 from MainDirectory.services.instruction_service import InstructionService
 from MainDirectory.database.database import get_session
-from MainDirectory.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd, RecipeIngredientsStepsResponse
-from MainDirectory.schemas.recipe_ingredients_schema import RecipeIngredientResponse
+from MainDirectory.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd, RecipeIngredientsStepsResponse, RecipeIngredientsStepsRequest
 
 recipe_router = APIRouter(
     prefix="/recipe",
@@ -115,3 +114,20 @@ def get_recipe_ingredients_and_steps(recipe_id : int, db : _orm.Session = Depend
     )
 
     return recipe_ingredients_instruction
+
+
+@recipe_router.post("/recipe_extra/add", status_code = status.HTTP_201_CREATED)
+def add_recipe_ingredients_and_instruction(recipe_ingredients_instruction : RecipeIngredientsStepsRequest, db : _orm.Session = Depends(get_session)):
+    
+    try: 
+        RecipeService.add_recipe_ingredients_and_instruction(_recipe_ingredients_instruction = recipe_ingredients_instruction, _db = db)
+
+        return {"SUCCESS" : f"New Recipe Ingredients and Instruction for recipe id = {recipe_ingredients_instruction.recipe_id} was added successfully !"}
+    
+    except TypeError:
+        raise HTTPException(status_code=404, detail = f"Can not add because recipe not exist !")
+    except Exception as e:
+        print("EXCEPTION: ", e)
+        db.rollback()
+        raise HTTPException(status_code=404, detail = f"Can not add new recipe ingredients and instruction !")
+    
