@@ -4,6 +4,8 @@ from typing import Optional, List
 from MainDirectory.schemas.category_schema import CategoryResponse
 from MainDirectory.schemas.recipe_detail_schema import RecipeDetailResponse, RecipeDetailRequestAdd
 from MainDirectory.schemas.user_schema import UserResponse
+from MainDirectory.schemas.instruction_steps_schema import InstructionStepsResponse
+from MainDirectory.schemas.recipe_ingredients_schema import RecipeIngredientResponse
 
 class RecipeRequestAdd(BaseModel):
     recipe_id : Optional[int] = None
@@ -26,5 +28,10 @@ class RecipeResponse(BaseModel):
     recipe_detail : RecipeDetailResponse
     user : UserResponse
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
+
+class RecipeIngredientsStepsResponse(BaseModel):
+    ingredients : List[RecipeIngredientResponse]
+    steps : List[InstructionStepsResponse]
