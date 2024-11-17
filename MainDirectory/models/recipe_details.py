@@ -16,4 +16,4 @@ class RecipeDetail(Base):
     difficulty : Mapped[Integer] = mapped_column(Integer, nullable = False)
 
     #relationship with Recipe
-    recipe : Mapped["Recipe"] = relationship("Recipe", back_populates='recipe_detail')
+    recipe : Mapped["Recipe"] = relationship(back_populates='recipe_detail')

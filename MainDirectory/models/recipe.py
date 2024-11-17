@@ -17,11 +17,11 @@ class Recipe(Base):
 
     # relationship with Category
     category_id : Mapped[Integer] = mapped_column(Integer, ForeignKey('categories.category_id'))
-    categories : Mapped[List["Category"]] = relationship(back_populates = 'recipe')
+    category : Mapped[List["Category"]] = relationship(back_populates = 'recipe')
 
     # # relationship with Recipe_Details
     recipe_detail_id: Mapped[Integer] = mapped_column(Integer, ForeignKey('recipe_details.recipe_detail_id'))
-    recipe_detail : Mapped["RecipeDetail"] = relationship("RecipeDetail",back_populates = 'recipe')
+    recipe_detail : Mapped["RecipeDetail"] = relationship(back_populates = 'recipe', cascade="all, delete")
 
     # relationship with User
     user_id : Mapped[Integer] = mapped_column(Integer, ForeignKey('users.user_id'))
@@ -37,5 +37,7 @@ class Recipe(Base):
     steps : Mapped[List["InstructionStep"]] = relationship(back_populates = 'recipe')
 
     # # relationship Many-To-Many by RecipeIngridients
-    ingredients : Mapped[List["RecipeIngredient"]] = relationship(back_populates = 'recipe')
+    ingredients : Mapped[List["RecipeIngredient"]] = relationship(back_populates = 'recipe', cascade="all, delete")
 
+    def __str__(self) -> str:
+        return f"Recipe(id={self.category_id},name={self.name},image_url={self.image_url},preparation_time={self.preparation_time},creation_time={self.creation_time},last_modified={self.last_modified},category_id={self.category_id},recipe_detail_id={self.recipe_detail_id},user_id={self.user_id},)"
