@@ -7,8 +7,9 @@ class RecipeDetailRequestAdd(BaseModel):
     total_rating : float
     difficulty : int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 class RecipeDetailResponse(BaseModel):
     recipe_detail_id : int
@@ -18,5 +19,6 @@ class RecipeDetailResponse(BaseModel):
     total_rating : float
     difficulty : int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

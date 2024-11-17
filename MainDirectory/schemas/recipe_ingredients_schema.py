@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from MainDirectory.schemas.ingredient_schema import IngredientResponse
+from MainDirectory.schemas.ingredient_schema import IngredientResponse, IngredientRequestAdd
 
 class RecipeIngredientRequestAdd(BaseModel):
     recipe_id : int
@@ -8,8 +8,9 @@ class RecipeIngredientRequestAdd(BaseModel):
     quantity : float
     unit : str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class RecipeIngredientResponse(BaseModel):
@@ -18,5 +19,6 @@ class RecipeIngredientResponse(BaseModel):
     quantity : float
     unit : str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

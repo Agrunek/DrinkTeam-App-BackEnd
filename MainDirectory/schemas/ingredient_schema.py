@@ -5,8 +5,9 @@ class IngredientRequestAdd(BaseModel):
     name : str
     type : str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class IngredientResponse(BaseModel):
@@ -14,5 +15,6 @@ class IngredientResponse(BaseModel):
     name : str
     type : str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

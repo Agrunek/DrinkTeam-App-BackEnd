@@ -9,6 +9,7 @@ class Step(Base):
     step_id : Mapped[int] = mapped_column(Integer, primary_key = True, index = True)
     name : Mapped[String] = mapped_column(String(30))
     description : Mapped[String] = mapped_column(String(60))
+    step_number : Mapped[Integer] = mapped_column(Integer)
     wait_time : Mapped[Time] = mapped_column(Time)
 
     # # relationship Many-To-Many with InstructionStep
