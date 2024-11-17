@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from MainDirectory.schemas.steps_schema import StepRequestResponse
 
-class InstructionStepsResponse(BaseModel):
+class InstructionStepsRequestResponse(BaseModel):
     step : StepRequestResponse
 
     model_config = {

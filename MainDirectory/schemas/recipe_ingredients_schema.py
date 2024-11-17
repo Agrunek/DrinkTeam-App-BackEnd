@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from MainDirectory.schemas.ingredient_schema import IngredientResponse
+from MainDirectory.schemas.ingredient_schema import IngredientResponse, IngredientRequestAdd
 
 class RecipeIngredientRequestAdd(BaseModel):
     recipe_id : int
