@@ -8,8 +8,9 @@ class RecipeIngredientRequestAdd(BaseModel):
     quantity : float
     unit : str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class RecipeIngredientResponse(BaseModel):
@@ -18,5 +19,6 @@ class RecipeIngredientResponse(BaseModel):
     quantity : float
     unit : str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
