@@ -136,3 +136,4 @@ __azurite_db*__.json
 
 .vscode
 README.md
+MainDirectory\main_backup.py
