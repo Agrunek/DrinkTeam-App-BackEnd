@@ -11,7 +11,7 @@ from app.services.instruction_service import InstructionService
 class RecipeService:
 
     @staticmethod
-    def get_all_recipes(_sort_rating : str | None, _sort_prep_time : str, _sort_difficulty : str, _db : _orm.Session):
+    def get_all_recipes(_sort_rating : str | None, _sort_prep_time : str | None, _sort_difficulty : str | None, _db : _orm.Session):
         
         rating_order = None if _sort_rating == None else _sql.asc(RecipeDetail.total_rating) if _sort_rating == "asc" else _sql.desc(RecipeDetail.total_rating)
         prep_time_order = None if _sort_prep_time == None else _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
@@ -19,7 +19,17 @@ class RecipeService:
 
         print(f"Check: {rating_order} | {prep_time_order} | {difficulty_order}")
 
-        stmt = _sql.select(Recipe).join(Recipe.recipe_detail).order_by(rating_order,difficulty_order,prep_time_order)
+        order_criteria = []
+        if rating_order is not None:
+            order_criteria.append(rating_order)
+        if prep_time_order is not None:
+            order_criteria.append(prep_time_order)
+        if difficulty_order is not None:
+            order_criteria.append(difficulty_order)
+
+        print(order_criteria)
+
+        stmt = _sql.select(Recipe).join(Recipe.recipe_detail).order_by(*order_criteria)
 
         return _db.execute(stmt).scalars().all()
     
