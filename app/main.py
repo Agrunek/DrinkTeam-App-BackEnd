@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers.recipe_router import recipe_router
 from app.routers.user_router import user_router
 from app.routers.recipe_ingredients_router import recipe_ingredient_router
+from app.routers.review_router import review_router
 
 from app.database.database import create_database
 
@@ -22,29 +23,10 @@ app.add_middleware(
 app.include_router(recipe_router)
 app.include_router(user_router)
 app.include_router(recipe_ingredient_router)
-
-@app.get("/")
-async def hello():
-    return {
-        "Hello" : "world !"
-    }
+app.include_router(review_router)
 
 @app.get("/test")
 async def test():
     return {
         "Connection status: " : "CONNECTED"
-    }
-
-
-@app.get("/sample")
-async def index():
-    return {
-        "info": "Try /hello/Shivani for parameterized route123.",
-    }
-
-
-@app.get("/hello/{name}")
-async def get_name(name: str):
-    return {
-        "name": name,
     }
