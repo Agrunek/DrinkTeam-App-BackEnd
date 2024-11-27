@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Time, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Time, DateTime, ForeignKey, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from app.models import Base
@@ -8,21 +8,22 @@ class Recipe(Base):
     __tablename__ = 'recipes'
 
     recipe_id : Mapped[int] = mapped_column(Integer, primary_key = True, index = True)
+
     name : Mapped[String] = mapped_column(String(50))
     image_url : Mapped[String] = mapped_column(String(50), nullable = True)
-    preparation_time : Mapped[Time] = mapped_column(Time)
+    preparation_time : Mapped[Integer] = mapped_column(Integer)
     creation_time : Mapped[DateTime] = mapped_column(DateTime)
     last_modified : Mapped[DateTime] = mapped_column(DateTime)
 
+    description : Mapped[String] = mapped_column(String(200), nullable = False)
+    alcohol_content : Mapped[Float] = mapped_column(Float, nullable = False)
+    total_rating : Mapped[Float] = mapped_column(Float, nullable = False)
+    difficulty : Mapped[Integer] = mapped_column(Integer, nullable = False)
 
     # relationship with Category
     category_id : Mapped[Integer] = mapped_column(Integer, ForeignKey('categories.category_id'))
     category : Mapped[List["Category"]] = relationship(back_populates = 'recipe')
-
-    # # relationship with Recipe_Details
-    recipe_detail_id: Mapped[Integer] = mapped_column(Integer, ForeignKey('recipe_details.recipe_detail_id'))
-    recipe_detail : Mapped["RecipeDetail"] = relationship(back_populates = 'recipe', cascade="all, delete")
-
+    
     # relationship with User
     user_id : Mapped[Integer] = mapped_column(Integer, ForeignKey('users.user_id'))
     user : Mapped[List["User"]] = relationship(back_populates = 'recipe')
