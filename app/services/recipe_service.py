@@ -3,7 +3,6 @@ import sqlalchemy.orm as _orm
 from datetime import datetime
 
 from app.models.recipe import Recipe
-from app.models.recipe_details import RecipeDetail
 from app.schemas.recipe_schema import RecipeRequestAdd, RecipeIngredientsStepsRequest
 from app.services.recipe_ingridient_service import RecipeIngredientService
 from app.services.instruction_service import InstructionService
@@ -13,9 +12,9 @@ class RecipeService:
     @staticmethod
     def get_all_recipes(_sort_rating : str | None, _sort_prep_time : str | None, _sort_difficulty : str | None, _db : _orm.Session):
         
-        rating_order = None if _sort_rating == None else _sql.asc(RecipeDetail.total_rating) if _sort_rating == "asc" else _sql.desc(RecipeDetail.total_rating)
+        rating_order = None if _sort_rating == None else _sql.asc(Recipe.total_rating) if _sort_rating == "asc" else _sql.desc(Recipe.total_rating)
         prep_time_order = None if _sort_prep_time == None else _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
-        difficulty_order = None if _sort_difficulty == None else _sql.asc(RecipeDetail.difficulty) if _sort_difficulty == "asc" else _sql.desc(RecipeDetail.difficulty)
+        difficulty_order = None if _sort_difficulty == None else _sql.asc(Recipe.difficulty) if _sort_difficulty == "asc" else _sql.desc(Recipe.difficulty)
 
         print(f"Check: {rating_order} | {prep_time_order} | {difficulty_order}")
 
@@ -29,7 +28,7 @@ class RecipeService:
 
         print(order_criteria)
 
-        stmt = _sql.select(Recipe).join(Recipe.recipe_detail).order_by(*order_criteria)
+        stmt = _sql.select(Recipe).order_by(*order_criteria)
 
         return _db.execute(stmt).scalars().all()
     
@@ -49,14 +48,6 @@ class RecipeService:
     
     @staticmethod
     def add_recipe(_new_recipe : RecipeRequestAdd, _db : _orm.Session):
-        
-        new_recipe_detail = RecipeDetail(
-            description = _new_recipe.recipe_detail.description,
-            type = _new_recipe.recipe_detail.type,
-            alcohol_content = _new_recipe.recipe_detail.alcohol_content,
-            total_rating = _new_recipe.recipe_detail.total_rating,
-            difficulty = _new_recipe.recipe_detail.difficulty
-        )
 
         new_recipe = Recipe(
             name = _new_recipe.name,
@@ -65,7 +56,6 @@ class RecipeService:
             creation_time = datetime.now(),
             last_modified = datetime.now(),
             category_id = _new_recipe.category_id,
-            recipe_detail = new_recipe_detail,
             user_id = _new_recipe.user_id,
         )
 
