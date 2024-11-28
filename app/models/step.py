@@ -15,3 +15,5 @@ class Step(Base):
     # # relationship Many-To-Many with InstructionStep
     recipes : Mapped[List["InstructionStep"]] = relationship(back_populates = 'step')
 
+    def __str__(self) -> str:
+        return f"Step(step_id={self.step_id},name={self.name},description={self.description},step_number={self.step_number},duration={self.duration})"
