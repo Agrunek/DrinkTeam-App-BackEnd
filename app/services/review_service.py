@@ -4,6 +4,7 @@ from datetime import datetime
 
 from app.models.review import Review
 from app.schemas.review_schema import ReviewRequestAdd
+from app.services.recipe_service import RecipeService
 
 class ReviewService:
 
@@ -23,6 +24,11 @@ class ReviewService:
             recipe_id = _new_review.recipe_id,
             user_id = _new_review.user_id
         )
+
+        # Update Recipe total_rating field
+        recipe = RecipeService.get_recipe_by_id(_recipe_id = _new_review.recipe_id, _db = _db)
+
+        recipe.total_rating += _new_review.rating
 
         _db.add(new_review)
         _db.commit()
