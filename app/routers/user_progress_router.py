@@ -35,7 +35,10 @@ def initialize_user_progress_for_recipe(user_id : int, recipe_id : int, db : _or
     return {"SUCCESS" : f"User id = {user_id} just started recipe id = {recipe_id}"}
 
 
-@user_progress_router.put("/update", status_code = status.HTTP_200_OK)
-def update_user_progress():
-    pass
+@user_progress_router.put("/update/{user_id}/{recipe_id}/{go_next_step}", status_code = status.HTTP_200_OK)
+def update_user_progress(user_id : int, recipe_id : int, go_next_step : bool, db : _orm.Session = Depends(get_session)):
+
+    UserProgressService.update_user_progress(_user_id = user_id, _recipe_id = recipe_id, _go_next_step = go_next_step, _db = db)
+
+    return {"SUCCESS" : f"Status {go_next_step} of user progress for recipe id = {recipe_id} updated by user id = {user_id}"}
 

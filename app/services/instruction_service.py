@@ -11,7 +11,7 @@ class InstructionService:
     @staticmethod
     def get_recipe_instruction(_recipe_id : int, _db : _orm.Session):
 
-        stmt = _sql.select(InstructionStep).where(InstructionStep.recipe_id == _recipe_id)
+        stmt = _sql.select(InstructionStep).where(InstructionStep.recipe_id == _recipe_id).join(InstructionStep.step).order_by(_sql.asc(Step.step_number))
         
         return _db.execute(stmt).scalars().all()
     
