@@ -4,7 +4,7 @@ from typing import List
 
 from app.models.recipe_ingredients import RecipeIngredient
 from app.schemas.recipe_ingredients_schema import RecipeIngredientRequestAdd
-from app.models.recipe_ingredients import RecipeIngredient
+from app.models.ingredient import Ingredient
 
 class RecipeIngredientService:
 
@@ -16,16 +16,21 @@ class RecipeIngredientService:
         return _db.execute(stmt).scalars().all()
     
     @staticmethod
-    def add_recipe_ingredients(_recipe_ingredients : List[RecipeIngredientRequestAdd] , _db : _orm.Session):
+    def add_recipe_ingredients(_recipe_id : int, _recipe_ingredients : List[RecipeIngredientRequestAdd] , _db : _orm.Session):
 
         for recipe_ingredient in _recipe_ingredients:
             #print(recipe_ingredient)
 
+            _new_ingredient = Ingredient(
+                name = recipe_ingredient.ingredient.name,
+                type = recipe_ingredient.ingredient.type
+            )
+
             _new_recipe_ingredient = RecipeIngredient(
                 quantity = recipe_ingredient.quantity,
                 unit = recipe_ingredient.unit,
-                recipe_id = recipe_ingredient.recipe_id,
-                ingredient_id = recipe_ingredient.ingredient_id
+                recipe_id = _recipe_id,
+                ingredient = _new_ingredient
             )
             
             _db.add(_new_recipe_ingredient)

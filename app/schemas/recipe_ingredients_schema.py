@@ -3,8 +3,7 @@ from pydantic import BaseModel
 from app.schemas.ingredient_schema import IngredientResponse, IngredientRequestAdd
 
 class RecipeIngredientRequestAdd(BaseModel):
-    recipe_id : int
-    ingredient_id : int
+    ingredient : IngredientRequestAdd
     quantity : float
     unit : str
 

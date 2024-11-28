@@ -112,7 +112,9 @@ class RecipeService:
         if not recipe_check:
             raise TypeError
 
-        RecipeIngredientService.add_recipe_ingredients(_recipe_ingredients = _recipe_ingredients_instruction.ingredients, _db = _db)
+        RecipeIngredientService.add_recipe_ingredients(_recipe_id = _recipe_ingredients_instruction.recipe_id,
+                                                        _recipe_ingredients = _recipe_ingredients_instruction.ingredients,
+                                                        _db = _db)
 
         InstructionService.add_recipe_instruction(_recipe_id = _recipe_ingredients_instruction.recipe_id,
                                                 _recipe_instructions = _recipe_ingredients_instruction.steps,
