@@ -12,7 +12,7 @@ class RecipeService:
     @staticmethod
     def get_all_recipes(_sort_rating : str | None, _sort_prep_time : str | None, _sort_difficulty : str | None, _db : _orm.Session):
         
-        rating_order = None if _sort_rating == None else _sql.asc(Recipe.total_rating) if _sort_rating == "asc" else _sql.desc(Recipe.total_rating)
+        rating_order = None if _sort_rating == None else _sql.asc(Recipe.average_rating) if _sort_rating == "asc" else _sql.desc(Recipe.average_rating)
         prep_time_order = None if _sort_prep_time == None else _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
         difficulty_order = None if _sort_difficulty == None else _sql.asc(Recipe.difficulty) if _sort_difficulty == "asc" else _sql.desc(Recipe.difficulty)
 
@@ -57,7 +57,8 @@ class RecipeService:
             last_modified = datetime.now(),
             description = _new_recipe.description,
             alcohol_content = _new_recipe.alcohol_content,
-            total_rating = 0,
+            average_rating = 0,
+            number_of_reviews = 0,
             difficulty = _new_recipe.difficulty,
             category_id = _new_recipe.category_id,
             user_id = _new_recipe.user_id,

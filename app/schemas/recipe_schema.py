@@ -8,7 +8,7 @@ from app.schemas.recipe_ingredients_schema import RecipeIngredientResponse, Reci
 from app.schemas.steps_schema import StepRequestResponse
 
 class RecipeRequestAdd(BaseModel):
-    recipe_id : Optional[int]
+    recipe_id : Optional[int] = None
     name : str
     image_url : Optional[str] = None
     description : str
