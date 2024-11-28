@@ -1,6 +1,7 @@
 import sqlalchemy as _sql
 import sqlalchemy.orm as _orm
 from datetime import datetime
+from fastapi import UploadFile
 
 from app.models.recipe import Recipe
 from app.schemas.recipe_schema import RecipeRequestAdd, RecipeIngredientsStepsRequest
@@ -51,7 +52,7 @@ class RecipeService:
 
         new_recipe = Recipe(
             name = _new_recipe.name,
-            image_url = _new_recipe.image_url,
+            image_url = "",
             preparation_time = 0,
             creation_time = datetime.now(),
             last_modified = datetime.now(),
@@ -68,6 +69,14 @@ class RecipeService:
         _db.commit()
         _db.refresh(new_recipe)
         
+
+    @staticmethod
+    def update_image_filename(recipe_id : int,file_url : str, _db : _orm.Session):
+        
+        recipe = RecipeService.get_recipe_by_id(_recipe_id = recipe_id, _db = _db)
+        recipe.image_url = file_url
+        _db.commit()
+
 
     @staticmethod
     def delete_recipe_by_id(_recipe_id : int, _db : _orm.Session):

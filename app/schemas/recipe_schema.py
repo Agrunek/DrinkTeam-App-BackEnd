@@ -10,7 +10,6 @@ from app.schemas.steps_schema import StepRequestResponse
 class RecipeRequestAdd(BaseModel):
     recipe_id : Optional[int] = None
     name : str
-    image_url : Optional[str] = None
     description : str
     alcohol_content : float
     difficulty : int
