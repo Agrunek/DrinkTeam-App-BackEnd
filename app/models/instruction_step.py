@@ -15,4 +15,5 @@ class InstructionStep(Base):
 
     step : Mapped[List["Step"]] = relationship(back_populates='recipes')
     recipe : Mapped["Recipe"] = relationship(back_populates='steps')
+    user_progress : Mapped["UserProgress"] = relationship(back_populates='instruction_step')
     

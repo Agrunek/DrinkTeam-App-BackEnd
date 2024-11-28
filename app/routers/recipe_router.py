@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 import sqlalchemy.orm as _orm
-import fastapi as _fastapi
 from typing import List
-# from sqlalchemy import text
 
 from app.services.recipe_service import RecipeService
 from app.services.recipe_ingridient_service import RecipeIngredientService

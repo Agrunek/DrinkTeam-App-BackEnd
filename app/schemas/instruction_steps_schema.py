@@ -1,6 +1,4 @@
 from pydantic import BaseModel
-from datetime import datetime, time
-from typing import Optional, List
 
 from app.schemas.steps_schema import StepRequestResponse
 

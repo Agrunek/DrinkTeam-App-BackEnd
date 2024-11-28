@@ -8,10 +8,12 @@ class Step(Base):
 
     step_id : Mapped[int] = mapped_column(Integer, primary_key = True, index = True)
     name : Mapped[String] = mapped_column(String(30))
-    description : Mapped[String] = mapped_column(String(60))
+    description : Mapped[String] = mapped_column(String(80))
     step_number : Mapped[Integer] = mapped_column(Integer)
-    wait_time : Mapped[Time] = mapped_column(Time)
+    duration : Mapped[Integer] = mapped_column(Integer)
 
     # # relationship Many-To-Many with InstructionStep
     recipes : Mapped[List["InstructionStep"]] = relationship(back_populates = 'step')
 
+    def __str__(self) -> str:
+        return f"Step(step_id={self.step_id},name={self.name},description={self.description},step_number={self.step_number},duration={self.duration})"
