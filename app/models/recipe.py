@@ -17,7 +17,8 @@ class Recipe(Base):
 
     description : Mapped[String] = mapped_column(String(200), nullable = False)
     alcohol_content : Mapped[Float] = mapped_column(Float, nullable = False)
-    total_rating : Mapped[Float] = mapped_column(Float, nullable = False)
+    average_rating : Mapped[Float] = mapped_column(Float, nullable = False)
+    number_of_reviews : Mapped[Integer] = mapped_column(Integer, nullable = False)
     difficulty : Mapped[Integer] = mapped_column(Integer, nullable = False)
 
     # relationship with Category

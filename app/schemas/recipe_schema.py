@@ -27,7 +27,8 @@ class RecipeResponse(BaseModel):
     last_modified : datetime
     description : str
     alcohol_content : float
-    total_rating : int
+    average_rating : float
+    number_of_reviews : int
     difficulty : int
     category : CategoryResponse
     user : UserResponse
