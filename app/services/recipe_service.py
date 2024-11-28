@@ -52,9 +52,13 @@ class RecipeService:
         new_recipe = Recipe(
             name = _new_recipe.name,
             image_url = _new_recipe.image_url,
-            preparation_time = _new_recipe.preparation_time,
+            preparation_time = 0,
             creation_time = datetime.now(),
             last_modified = datetime.now(),
+            description = _new_recipe.description,
+            alcohol_content = _new_recipe.alcohol_content,
+            total_rating = 0,
+            difficulty = _new_recipe.difficulty,
             category_id = _new_recipe.category_id,
             user_id = _new_recipe.user_id,
         )
@@ -87,13 +91,11 @@ class RecipeService:
 
             recipe.name = _updated_recipe.name
             recipe.image_url = _updated_recipe.image_url
-            recipe.preparation_time = _updated_recipe.preparation_time
             recipe.last_modified = datetime.now()
-            recipe.recipe_detail.description = _updated_recipe.recipe_detail.description
-            recipe.recipe_detail.type = _updated_recipe.recipe_detail.type
-            recipe.recipe_detail.alcohol_content = _updated_recipe.recipe_detail.alcohol_content
-            recipe.recipe_detail.total_rating = _updated_recipe.recipe_detail.total_rating
-            recipe.recipe_detail.difficulty = _updated_recipe.recipe_detail.difficulty
+            recipe.description = _updated_recipe.description
+            recipe.alcohol_content = _updated_recipe.alcohol_content
+            recipe.difficulty = _updated_recipe.difficulty
+            recipe.category_id = _updated_recipe.category_id
 
             _db.commit()
 

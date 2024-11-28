@@ -63,8 +63,9 @@ def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = De
 
             return {"SUCCESS" : "New Recipe was added successfully !"}
         
-        except Exception:
+        except Exception as e:
             db.rollback()
+            print(f"EXCEPTION : {e}")
             raise HTTPException(status_code=404, detail = f"Can not add new recipe !")
         
 

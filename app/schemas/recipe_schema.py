@@ -8,12 +8,11 @@ from app.schemas.recipe_ingredients_schema import RecipeIngredientResponse, Reci
 from app.schemas.steps_schema import StepRequestResponse
 
 class RecipeRequestAdd(BaseModel):
+    recipe_id : Optional[int]
     name : str
     image_url : Optional[str] = None
-    preparation_time : time
     description : str
     alcohol_content : float
-    total_rating : int
     difficulty : int
     category_id : int
     user_id : int
@@ -23,7 +22,7 @@ class RecipeResponse(BaseModel):
     recipe_id : int
     name : str
     image_url : Optional[str] = None
-    preparation_time : time
+    preparation_time : int
     creation_time : datetime
     last_modified : datetime
     description : str
