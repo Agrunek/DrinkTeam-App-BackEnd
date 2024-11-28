@@ -1,8 +1,15 @@
 from azure.storage.blob import BlobServiceClient
 from fastapi import File, UploadFile, HTTPException
 import sqlalchemy.orm as _orm
+import json
 
-AZURE_STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=bazadanych9797;AccountKey=API_KEY;EndpointSuffix=core.windows.net"
+ACCOUNT_KEY = None
+
+with open("./app/password.json", "r") as file:
+    ACCOUNT_KEY = json.load(file)
+    ACCOUNT_KEY = ACCOUNT_KEY['AZURE_ACCOUNT_KEY']
+
+AZURE_STORAGE_CONNECTION_STRING = f"DefaultEndpointsProtocol=https;AccountName=bazadanych9797;AccountKey={ACCOUNT_KEY};EndpointSuffix=core.windows.net"
 AZURE_CONTAINER_NAME = "drink-team-images"
 
 
