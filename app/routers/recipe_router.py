@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 import sqlalchemy.orm as _orm
 from typing import List
 
@@ -7,6 +7,8 @@ from app.services.recipe_ingridient_service import RecipeIngredientService
 from app.services.instruction_service import InstructionService
 from app.database.database import get_session
 from app.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd, RecipeIngredientsStepsResponse, RecipeIngredientsStepsRequest
+
+from app.services import azureblob_service
 
 recipe_router = APIRouter(
     prefix="/recipe",
@@ -63,10 +65,26 @@ def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = De
 
             return {"SUCCESS" : "New Recipe was added successfully !"}
         
-        except Exception:
+        except Exception as e:
             db.rollback()
+            print(f"EXCEPTION : {e}")
             raise HTTPException(status_code=404, detail = f"Can not add new recipe !")
         
+
+@recipe_router.patch("/upload_image/{recipe_id}", status_code = status.HTTP_202_ACCEPTED)
+async def upload_recipe_image(recipe_id : int, file : UploadFile = File(...), db : _orm.Session = Depends(get_session)):
+
+    if file.content_type not in ["image/jpeg", "image/png"]:
+        raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG or PNG files are allowed.")
+
+    file_url = await azureblob_service.upload_recipe_image_to_azure(recipe_id, file)
+
+    RecipeService.update_image_filename(recipe_id,file_url,db)
+
+    print("file url ",file_url)
+
+    return {"SUCCESS" : f"Image for recipe id = {recipe_id} uploaded successfully"}
+
 
 @recipe_router.delete("/delete/{recipe_id}", status_code = status.HTTP_202_ACCEPTED)
 def delete_recipe(recipe_id : int, db : _orm.Session = Depends(get_session)):

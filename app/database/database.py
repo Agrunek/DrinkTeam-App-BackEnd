@@ -1,6 +1,6 @@
 import sqlalchemy as _sql
 from sqlalchemy.orm import sessionmaker
-import os
+import json
 from app.models import Base
 
 from app.models.category import Category
@@ -10,15 +10,20 @@ from app.models.user import User
 from app.models.user_progress import UserProgress
 from app.models.review import Review
 from app.models.category import Category
-from app.models.recipe_details import RecipeDetail
 from app.models.recipe import Recipe
 from app.models.step import Step
 from app.models.instruction_step import InstructionStep
 
-password=os.getenv("DRINK_TEAM_DATABASE_PASSWORD")
+password = None
+
+with open("./app/password.json", "r") as file:
+    password = json.load(file)
+    password = password['DRINK_TEAM_DATABASE_PASSWORD']
+
+
 connection_string = f"mssql+pyodbc://admin_database:{password}@drink-team.database.windows.net:1433/drink_team_db?driver=ODBC+Driver+17+for+SQL+Server" # CONNECT TO AZURE SQL DATABASE
-#connection_string = f"mysql+mysqlconnector://root:{password}@127.0.0.1:3306/drink-team" # CONNECT TO MYSQL DOCKER
-#connection_string = f"mysql+mysqlconnector://root:{password}@mysql:3306/drink-team" # CONNECT TO DOCKER MYSQL VIA FAST API DOCKER
+#connection_string = f"mysql+mysqlconnector://root:password123@127.0.0.1:3306/drink-team" # CONNECT TO MYSQL DOCKER
+#connection_string = f"mysql+mysqlconnector://root:password123@mysql:3306/drink-team" # CONNECT TO DOCKER MYSQL VIA FAST API DOCKER
 SessionLocal = None
 
 

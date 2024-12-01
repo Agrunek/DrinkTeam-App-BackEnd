@@ -1,6 +1,7 @@
 import sqlalchemy as _sql
 import sqlalchemy.orm as _orm
 from datetime import datetime
+from fastapi import UploadFile
 
 from app.models.recipe import Recipe
 from app.schemas.recipe_schema import RecipeRequestAdd, RecipeIngredientsStepsRequest
@@ -12,7 +13,7 @@ class RecipeService:
     @staticmethod
     def get_all_recipes(_sort_rating : str | None, _sort_prep_time : str | None, _sort_difficulty : str | None, _db : _orm.Session):
         
-        rating_order = None if _sort_rating == None else _sql.asc(Recipe.total_rating) if _sort_rating == "asc" else _sql.desc(Recipe.total_rating)
+        rating_order = None if _sort_rating == None else _sql.asc(Recipe.average_rating) if _sort_rating == "asc" else _sql.desc(Recipe.average_rating)
         prep_time_order = None if _sort_prep_time == None else _sql.asc(Recipe.preparation_time) if _sort_prep_time == "asc" else _sql.desc(Recipe.preparation_time)
         difficulty_order = None if _sort_difficulty == None else _sql.asc(Recipe.difficulty) if _sort_difficulty == "asc" else _sql.desc(Recipe.difficulty)
 
@@ -51,10 +52,15 @@ class RecipeService:
 
         new_recipe = Recipe(
             name = _new_recipe.name,
-            image_url = _new_recipe.image_url,
-            preparation_time = _new_recipe.preparation_time,
+            image_url = "",
+            preparation_time = 0,
             creation_time = datetime.now(),
             last_modified = datetime.now(),
+            description = _new_recipe.description,
+            alcohol_content = _new_recipe.alcohol_content,
+            average_rating = 0,
+            number_of_reviews = 0,
+            difficulty = _new_recipe.difficulty,
             category_id = _new_recipe.category_id,
             user_id = _new_recipe.user_id,
         )
@@ -63,6 +69,14 @@ class RecipeService:
         _db.commit()
         _db.refresh(new_recipe)
         
+
+    @staticmethod
+    def update_image_filename(recipe_id : int,file_url : str, _db : _orm.Session):
+        
+        recipe = RecipeService.get_recipe_by_id(_recipe_id = recipe_id, _db = _db)
+        recipe.image_url = file_url
+        _db.commit()
+
 
     @staticmethod
     def delete_recipe_by_id(_recipe_id : int, _db : _orm.Session):
@@ -87,13 +101,11 @@ class RecipeService:
 
             recipe.name = _updated_recipe.name
             recipe.image_url = _updated_recipe.image_url
-            recipe.preparation_time = _updated_recipe.preparation_time
             recipe.last_modified = datetime.now()
-            recipe.recipe_detail.description = _updated_recipe.recipe_detail.description
-            recipe.recipe_detail.type = _updated_recipe.recipe_detail.type
-            recipe.recipe_detail.alcohol_content = _updated_recipe.recipe_detail.alcohol_content
-            recipe.recipe_detail.total_rating = _updated_recipe.recipe_detail.total_rating
-            recipe.recipe_detail.difficulty = _updated_recipe.recipe_detail.difficulty
+            recipe.description = _updated_recipe.description
+            recipe.alcohol_content = _updated_recipe.alcohol_content
+            recipe.difficulty = _updated_recipe.difficulty
+            recipe.category_id = _updated_recipe.category_id
 
             _db.commit()
 
@@ -110,7 +122,9 @@ class RecipeService:
         if not recipe_check:
             raise TypeError
 
-        RecipeIngredientService.add_recipe_ingredients(_recipe_ingredients = _recipe_ingredients_instruction.ingredients, _db = _db)
+        RecipeIngredientService.add_recipe_ingredients(_recipe_id = _recipe_ingredients_instruction.recipe_id,
+                                                        _recipe_ingredients = _recipe_ingredients_instruction.ingredients,
+                                                        _db = _db)
 
         InstructionService.add_recipe_instruction(_recipe_id = _recipe_ingredients_instruction.recipe_id,
                                                 _recipe_instructions = _recipe_ingredients_instruction.steps,

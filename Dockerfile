@@ -35,9 +35,6 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 # Copy application code
 COPY ./app /code/app
 
-# Set environment variable
-ENV DRINK_TEAM_DATABASE_PASSWORD="drinkteam!1"
-
 # Expose port
 EXPOSE 8080
 

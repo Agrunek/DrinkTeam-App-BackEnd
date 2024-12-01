@@ -10,14 +10,15 @@ class Recipe(Base):
     recipe_id : Mapped[int] = mapped_column(Integer, primary_key = True, index = True)
 
     name : Mapped[String] = mapped_column(String(50))
-    image_url : Mapped[String] = mapped_column(String(50), nullable = True)
+    image_url : Mapped[String] = mapped_column(String(100), nullable = True)
     preparation_time : Mapped[Integer] = mapped_column(Integer)
     creation_time : Mapped[DateTime] = mapped_column(DateTime)
     last_modified : Mapped[DateTime] = mapped_column(DateTime)
 
     description : Mapped[String] = mapped_column(String(200), nullable = False)
     alcohol_content : Mapped[Float] = mapped_column(Float, nullable = False)
-    total_rating : Mapped[Float] = mapped_column(Float, nullable = False)
+    average_rating : Mapped[Float] = mapped_column(Float, nullable = False)
+    number_of_reviews : Mapped[Integer] = mapped_column(Integer, nullable = False)
     difficulty : Mapped[Integer] = mapped_column(Integer, nullable = False)
 
     # relationship with Category

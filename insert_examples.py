@@ -1,23 +1,19 @@
 from datetime import datetime
-from datetime import time
 
-from MainDirectory.models.category import Category
-from MainDirectory.models.ingredient import Ingredient
-from MainDirectory.models.recipe_ingredients import RecipeIngredient
-from MainDirectory.models.user import User
-from MainDirectory.models.user_progress import UserProgress
-from MainDirectory.models.review import Review
-from MainDirectory.models.category import Category
-from MainDirectory.models.recipe_details import RecipeDetail
-from MainDirectory.models.recipe import Recipe
-from MainDirectory.models.step import Step
-from MainDirectory.models.instruction_step import InstructionStep
+from app.models.category import Category
+from app.models.ingredient import Ingredient
+from app.models.recipe_ingredients import RecipeIngredient
+from app.models.user import User
+from app.models.user_progress import UserProgress
+from app.models.review import Review
+from app.models.category import Category
+from app.models.recipe import Recipe
+from app.models.step import Step
+from app.models.instruction_step import InstructionStep
 
-from MainDirectory.database.database import DatabaseHandler
+from app.database.database import get_session_with
 
-DatabaseHandler.create_database(DatabaseHandler)
-
-with DatabaseHandler.get_session(DatabaseHandler) as session:
+with get_session_with() as session:
 
     ## ADD EXAMPLE OBJECT TO DB
 
@@ -27,17 +23,6 @@ with DatabaseHandler.get_session(DatabaseHandler) as session:
     session.add(new_category)
     session.commit()
     session.refresh(new_category)
-
-    # Add RecipeDetail
-    new_recipe_detail = RecipeDetail(description = "pyszne picie ",
-                                    type="picie",
-                                    alcohol_content = 2.4,
-                                    total_rating = 10,
-                                    difficulty = 3)
-
-    session.add(new_recipe_detail)
-    session.commit()
-    session.refresh(new_recipe_detail)
 
     # ADD User
     new_user = User(
@@ -52,31 +37,23 @@ with DatabaseHandler.get_session(DatabaseHandler) as session:
     new_recipe = Recipe(
     name="Mojito",
     image_url="/images/mojito.jpg",
-    preparation_time=time(0, 10, 0),  # 10 minut
+    preparation_time=0,
     creation_time=datetime.now(),
-    last_modified=datetime.now()
+    last_modified=datetime.now(),
+    description = "bardzo smaczny drink",
+    alcohol_content = 0.02,
+    average_rating = 0,
+    number_of_reviews = 0,
+    difficulty = 2
     )
 
-    new_recipe.categories = new_category
-    new_recipe.recipe_detail = new_recipe_detail
+    new_recipe.category = new_category
     new_recipe.user = new_user
 
     session.add(new_recipe)
     session.commit()
     session.refresh(new_recipe)
 
-    # ADD User_Progress
-    new_user_progress = UserProgress(
-    started_date = datetime.now(),
-    finished_date = datetime.now(),
-    current_step = 3,
-    user_id = new_user.user_id,
-    recipe_id = new_recipe.recipe_id
-    )
-
-    session.add(new_user_progress)
-    session.commit()
-    session.refresh(new_user_progress)
 
     # ADD Review
 
@@ -123,7 +100,8 @@ with DatabaseHandler.get_session(DatabaseHandler) as session:
     new_step = Step(
     name = 'Add water',
     description = 'Add 200 ml of water',
-    wait_time = time(0, 10, 0)
+    step_number = 1,
+    duration = 100
     )
 
     session.add(new_step)
@@ -142,6 +120,20 @@ with DatabaseHandler.get_session(DatabaseHandler) as session:
     session.commit()
     session.refresh(new_recipe_step)
 
+
+    # ADD User_Progress
+    new_user_progress = UserProgress(
+    started_date = datetime.now(),
+    finished_date = datetime.now(),
+    completed = False,
+    user_id = new_user.user_id,
+    recipe_id = new_recipe.recipe_id,
+    instruction_steps_id = new_recipe_step.ingredient_step_id
+    )
+
+    session.add(new_user_progress)
+    session.commit()
+    session.refresh(new_user_progress)
 
     # LIST ALL Recipe
 
