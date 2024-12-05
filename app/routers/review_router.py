@@ -6,6 +6,8 @@ from typing import List
 from app.database.database import get_session
 from app.schemas.review_schema import ReviewResponse, ReviewRequestAdd
 from app.services.review_service import ReviewService
+from app.services.user_service import UserService
+
 
 review_router = APIRouter(
     prefix="/review",
@@ -18,7 +20,7 @@ def test():
 
 
 @review_router.get("/all/{recipe_id}", response_model = List[ReviewResponse], status_code = status.HTTP_200_OK)
-def get_all_reviews_for_recipe(recipe_id : int, db : _orm.Session = Depends(get_session)):
+def get_all_reviews_for_recipe(recipe_id : int, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
 
     reviews = ReviewService.get_all_reviews_for_recipe(_recipe_id = recipe_id, _db = db)
 
@@ -29,7 +31,7 @@ def get_all_reviews_for_recipe(recipe_id : int, db : _orm.Session = Depends(get_
 
 
 @review_router.post("/add", status_code = status.HTTP_201_CREATED)
-def add_new_review(new_review_ : ReviewRequestAdd, db : _orm.Session = Depends(get_session)):
+def add_new_review(new_review_ : ReviewRequestAdd, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
 
     try: 
         ReviewService.add_new_review(_new_review = new_review_, _db = db)
