@@ -9,6 +9,7 @@ from app.database.database import get_session
 from app.schemas.recipe_schema import RecipeResponse, RecipeRequestAdd, RecipeIngredientsStepsResponse, RecipeIngredientsStepsRequest
 
 from app.services import azureblob_service
+from app.services.user_service import UserService
 
 recipe_router = APIRouter(
     prefix="/recipe",
@@ -23,7 +24,8 @@ def test():
 def get_all_recipes(sort_rating : str | None = None,
                     sort_prep_time : str | None = None,
                     sort_difficulty : str | None = None,
-                    db : _orm.Session = Depends(get_session)):
+                    db : _orm.Session = Depends(get_session),
+                    user_email: str = Depends(UserService.get_current_user)):
 
         recipes = RecipeService.get_all_recipes(_sort_rating = sort_rating,
                                                 _sort_prep_time = sort_prep_time,
@@ -37,7 +39,7 @@ def get_all_recipes(sort_rating : str | None = None,
 
 
 @recipe_router.get("/{recipe_id}", response_model = RecipeResponse, status_code = status.HTTP_200_OK)
-def get_recipe_by_id(recipe_id : int, db : _orm.Session = Depends(get_session)):
+def get_recipe_by_id(recipe_id : int, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
         
         recipe = RecipeService.get_recipe_by_id(_recipe_id = recipe_id, _db = db)
 
@@ -48,7 +50,7 @@ def get_recipe_by_id(recipe_id : int, db : _orm.Session = Depends(get_session)):
 
 
 @recipe_router.get("/category/{category_id}", response_model = List[RecipeResponse], status_code = status.HTTP_200_OK)
-def get_recipes_by_category_id(category_id : int, db : _orm.Session = Depends(get_session)):
+def get_recipes_by_category_id(category_id : int, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
         
         recipes = RecipeService.get_recipes_by_category_id(_category_id = category_id, _db = db)
 
@@ -59,7 +61,7 @@ def get_recipes_by_category_id(category_id : int, db : _orm.Session = Depends(ge
 
 
 @recipe_router.post("/add", status_code = status.HTTP_201_CREATED)
-def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = Depends(get_session)):
+def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
         try: 
             RecipeService.add_recipe(_new_recipe = _new_RecipeRequest, _db = db)
 
@@ -72,7 +74,7 @@ def add_new_recipe(_new_RecipeRequest : RecipeRequestAdd, db : _orm.Session = De
         
 
 @recipe_router.patch("/upload_image/{recipe_id}", status_code = status.HTTP_202_ACCEPTED)
-async def upload_recipe_image(recipe_id : int, file : UploadFile = File(...), db : _orm.Session = Depends(get_session)):
+async def upload_recipe_image(recipe_id : int, file : UploadFile = File(...), db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
 
     if file.content_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG or PNG files are allowed.")
@@ -87,7 +89,7 @@ async def upload_recipe_image(recipe_id : int, file : UploadFile = File(...), db
 
 
 @recipe_router.delete("/delete/{recipe_id}", status_code = status.HTTP_202_ACCEPTED)
-def delete_recipe(recipe_id : int, db : _orm.Session = Depends(get_session)):
+def delete_recipe(recipe_id : int, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
         try: 
             RecipeService.delete_recipe_by_id(_recipe_id = recipe_id, _db = db)
 
@@ -99,7 +101,7 @@ def delete_recipe(recipe_id : int, db : _orm.Session = Depends(get_session)):
 
 
 @recipe_router.put("/update", status_code = status.HTTP_202_ACCEPTED)
-def update_recipe(update_recipe : RecipeRequestAdd, db : _orm.Session = Depends(get_session)):
+def update_recipe(update_recipe : RecipeRequestAdd, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
         
     try: 
         print("Try to update recipe")
@@ -113,7 +115,7 @@ def update_recipe(update_recipe : RecipeRequestAdd, db : _orm.Session = Depends(
         
 
 @recipe_router.get("/{recipe_id}/recipe_extra", response_model = RecipeIngredientsStepsResponse, status_code = status.HTTP_200_OK)
-def get_recipe_ingredients_and_steps(recipe_id : int, db : _orm.Session = Depends(get_session)):
+def get_recipe_ingredients_and_steps(recipe_id : int, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
 
     recipe_check = RecipeService.get_recipe_by_id(_recipe_id = recipe_id, _db = db)
 
@@ -133,7 +135,7 @@ def get_recipe_ingredients_and_steps(recipe_id : int, db : _orm.Session = Depend
 
 
 @recipe_router.post("/recipe_extra/add", status_code = status.HTTP_201_CREATED)
-def add_recipe_ingredients_and_instruction(recipe_ingredients_instruction : RecipeIngredientsStepsRequest, db : _orm.Session = Depends(get_session)):
+def add_recipe_ingredients_and_instruction(recipe_ingredients_instruction : RecipeIngredientsStepsRequest, db : _orm.Session = Depends(get_session),user_email: str = Depends(UserService.get_current_user)):
     
     try: 
         RecipeService.add_recipe_ingredients_and_instruction(_recipe_ingredients_instruction = recipe_ingredients_instruction, _db = db)

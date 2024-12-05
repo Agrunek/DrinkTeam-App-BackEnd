@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Time, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Time, DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from app.models import Base
@@ -11,7 +11,7 @@ class User(Base):
     email : Mapped[Integer] = mapped_column(String(50))
     password : Mapped[String] = mapped_column(String(60))
     date_of_birth : Mapped[DateTime] = mapped_column(DateTime)
-    creation_date : Mapped[DateTime] = mapped_column(DateTime)
+    creation_date : Mapped[DateTime] = mapped_column(DateTime, default=func.now())
 
     # # relationship with Recipe
     recipe : Mapped["Recipe"] = relationship(back_populates='user')
