@@ -66,6 +66,20 @@ class UserService:
         return user
     
     @staticmethod
+    def update_user(db, request: UpdateRequest, pwd_context, user_email):
+        user = db.query(User).filter(User.email == user_email).first()
+
+        update_data = request.model_dump(exclude_unset=True)
+        for field, value in update_data.items():
+            if field == "password":
+                value = pwd_context.hash(value)
+            setattr(user, field, value)
+
+        db.commit()
+        db.refresh(user)
+        return user
+    
+    @staticmethod
     def get_current_user(db: _sql.orm.Session = Depends(get_session), token: str = Depends(verify_token)):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])

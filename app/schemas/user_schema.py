@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class UserResponse(BaseModel):
     user_id : int
@@ -34,10 +35,10 @@ class RegisterRequest(BaseModel):
     }
 
 class UpdateRequest(BaseModel):
-    user_id : int
-    username : str | None
-    email : str | None
-    date_of_birth : datetime | None
+    username: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+    date_of_birth: Optional[datetime] = None
 
     model_config = {
         "from_attributes": True

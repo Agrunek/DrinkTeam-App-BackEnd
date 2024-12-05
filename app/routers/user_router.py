@@ -35,28 +35,28 @@ def register(user: RegisterRequest, db : _orm.Session = Depends(get_session)):
     return {"msg3": "User registered successfully"}
 
 
-def is_email(text:str):
-    return '@' in text
+
+def fetch_user(db: _orm.Session, username_or_email):
+    if '@' in username_or_email:
+        return UserService.get_user_by_email(db, username_or_email)
+    else:
+        return UserService.get_user_by_username(db, username_or_email)
+
 
 @user_router.post("/login")
-def login(user: LoginRequest, db : _orm.Session = Depends(get_session)):
+def login(user: LoginRequest, db: _orm.Session = Depends(get_session)):
     try:
-        if is_email(user.username_or_email):
-            email = user.username_or_email
-            stored_user: User = UserService.get_user_by_email(db, email)
-            username = stored_user.username
-        else: #username given instead
-            username = user.username_or_email
-            stored_user: User = UserService.get_user_by_username(db, username)
-            email = stored_user.email
 
+        stored_user: User = fetch_user(db, user.username_or_email)
         if not stored_user or not pwd_context.verify(user.password, stored_user.password):
             raise HTTPException(status_code=400, detail="Invalid credentials")
-        access_token = UserService.create_jwt_token({"sub": email})
 
+        access_token = UserService.create_jwt_token({"sub": stored_user.email})
     except Exception as e:
         return {"msg": str(e)}
+
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 
 
@@ -66,6 +66,17 @@ def refresh_token(user_email: str = Depends(UserService.get_current_user)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
+@user_router.put("/update")
+def update_user(request: UpdateRequest, db: _orm.Session = Depends(get_session), user_email: str = Depends(UserService.get_current_user)):
+
+    try:
+        if user_email != request.email and UserService.get_user_by_email(db, request.email):
+            raise HTTPException(status_code=400, detail="Email already in use")
+       
+        UserService.update_user(db, request, pwd_context, user_email)
+    except Exception as e:
+        return {"msg": str(e)}
+    return {"msg": "User updated successfully"}
 
 
 
