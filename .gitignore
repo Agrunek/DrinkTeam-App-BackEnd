@@ -137,3 +137,4 @@ __azurite_db*__.json
 .vscode
 README.md
 app/password.json
+host.json
