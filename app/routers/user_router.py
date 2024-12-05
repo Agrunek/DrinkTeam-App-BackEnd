@@ -17,12 +17,8 @@ user_router = APIRouter(
     tags=["users"]
 )
 
-SECRET_KEY = "secret_key"  #TODO: hide !!
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 
 
 
