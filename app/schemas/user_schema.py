@@ -14,6 +14,17 @@ class UserResponse(BaseModel):
     }
 
 
+class UserGet(BaseModel):
+    user_id : int
+    username : str
+    email : str
+    date_of_birth : datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
 
 class LoginRequest(BaseModel):
     username_or_email : str | None

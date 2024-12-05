@@ -7,7 +7,7 @@ import jwt
 from pydantic import BaseModel
 from app.services.user_service import UserService
 from app.database.database import get_session
-from app.schemas.user_schema import LoginRequest, RegisterRequest, UpdateRequest
+from app.schemas.user_schema import LoginRequest, RegisterRequest, UpdateRequest, UserGet
 from app.models.user import User
 import json
 
@@ -20,6 +20,20 @@ user_router = APIRouter(
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
+
+
+@user_router.get("/")
+def protected_route(db : _orm.Session = Depends(get_session), user_email: str = Depends(UserService.get_current_user)):
+    user: User = UserService.get_user_by_email(db, user_email)
+
+    response = UserGet(
+        user_id = user.user_id,
+        email = user.email,
+        username = user.username,
+        date_of_birth = user.date_of_birth 
+    )
+    return response
 
 
 @user_router.post("/register")
@@ -60,7 +74,7 @@ def login(user: LoginRequest, db: _orm.Session = Depends(get_session)):
 
 
 
-@user_router.post("/refresh")
+@user_router.get("/refresh")
 def refresh_token(user_email: str = Depends(UserService.get_current_user)):
     access_token = UserService.create_jwt_token({"sub": user_email})
     return {"access_token": access_token, "token_type": "bearer"}
