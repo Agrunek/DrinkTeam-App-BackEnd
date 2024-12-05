@@ -46,7 +46,7 @@ def register(user: RegisterRequest, db : _orm.Session = Depends(get_session)):
     except Exception as e:
         return {"msg": str(e)}
 
-    return {"msg3": "User registered successfully"}
+    return {"msg": "User registered successfully"}
 
 
 
